@@ -3,199 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escape Room: Laboratorio de Cálculo</title>
+    <title>Escape Room: Estación Euler</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Fondo Animado Espacial / Matemático -->
-    <div class="math-grid"></div>
-    <div class="stars"></div>
+    <!-- Fondo de espacio y partículas -->
+    <canvas id="space-canvas"></canvas>
+    <div id="hyperspace-overlay"></div>
 
-    <!-- Canvas para la Celebración Final -->
-    <canvas id="confetti-canvas"></canvas>
-
-    <div id="game-container">
-        <!-- PANTALLA DE INICIO / INTRODUCCIÓN -->
-        <div id="intro" class="screen active">
-            <h1>🚨 ALERTA: SECTOR 7 SELLADO</h1>
-            <div class="story-box">
-                <p><strong>AÑO 2026 — ESTACIÓN DE INVESTIGACIÓN MATH-CORP</strong></p>
-                <p>Ha ocurrido una falla crítica en el núcleo del reactor principal. El protocolo de contingencia ha bloqueado las 10 puertas blindadas del laboratorio.</p>
-                <p>La única forma de desbloquear las esclusas y salvar a la estación es ingresando los códigos de seguridad obtenidos mediante el análisis del <strong>Comportamiento Funcional y Aproximación Matemática</strong>.</p>
-                <p><em>¿Tienes el conocimiento necesario para analizar los datos, resolver los 10 sectores y escapar con vida?</em></p>
-            </div>
-            <button class="btn-start" onclick="iniciarJuego()">INICIAR PROTOCOLO DE ESCAPE</button>
-        </div>
-
-        <!-- PUERTA 1 -->
-        <div id="nivel1" class="screen">
-            <h2>PUERTA 1: Sector de Enfriamiento</h2>
-            <h3>Tema: Comportamiento Local</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Los Puntos Críticos ocurren cuando la derivada de una función es cero (f\'(x) = 0). En la gráfica, esto se ve como la cima de una montaña (máximo) o el fondo de un valle (mínimo).')">📄 Leer Archivo: Puntos Críticos</button>
-            <div class="puzzle-box">
-                <p>El candado exige el valor exacto de x donde la presión P(x) alcanza su punto más bajo (mínimo).</p>
-                <p class="math-func">P(x) = x² - 8x + 15</p>
-                <input type="number" id="input1" placeholder="Ingresa x">
-                <br>
-                <button class="btn-verify" onclick="verificar(1, '4', 'nivel2')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: Deriva la función P(x). La derivada es 2x - 8. Iguala eso a 0 y despeja x.')">💡 Pista</button>
+    <div id="cockpit">
+        <!-- Panel interactivo de la nave -->
+        <div id="ship-hud">
+            <div class="hud-stat">SISTEMA: <span id="sys-status">EMERGENCIA</span></div>
+            <div class="hud-stat">ENERGÍA DE RESERVA: <span id="energy-val">10%</span></div>
+            <div class="energy-bar-container">
+                <div id="energy-bar"></div>
             </div>
         </div>
 
-        <!-- PUERTA 2 -->
-        <div id="nivel2" class="screen">
-            <h2>PUERTA 2: Sala de Escáneres</h2>
-            <h3>Tema: Aproximación Lineal</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Aproximamos valores usando una Recta Tangente si conocemos un punto y su pendiente. Fórmula: L(x) = f(a) + f\'(a)(x - a)')">📄 Leer Archivo: Recta Tangente</button>
-            <div class="puzzle-box">
-                <p>En la posición 5 el sensor marca 20 (f(5)=20) y su tasa de cambio es 3 (f'(5)=3).</p>
-                <p>Aproxima el valor para la posición <b>5.2</b></p>
-                <input type="number" step="0.1" id="input2" placeholder="Ingresa valor">
-                <br>
-                <button class="btn-verify" onclick="verificar(2, '20.6', 'nivel3')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: L(5.2) = 20 + 3 * (5.2 - 5). Resuelve el paréntesis primero.')">💡 Pista</button>
+        <div id="game-container">
+            <!-- PANTALLA DE INICIO -->
+            <div id="intro" class="screen active">
+                <div class="ship-badge">🚀 ESTACIÓN ESPACIAL EULER</div>
+                <h1>EMERGENCIA EN ÓRBITA</h1>
+                <div class="story-box">
+                    <p><b>ALERTA DE SISTEMA:</b> La nave ha entrado en la zona de atracción de un agujero negro. El sistema de navegación automática ha colapsado y los 10 escudos térmicos están bloqueados.</p>
+                    <p>Para recalibrar los motores y activar el Salto al Hiperespacio, debes descifrar los códigos de seguridad resolviendo el <b>Análisis de Comportamiento Funcional y Aproximación Matemática</b>.</p>
+                </div>
+                <button class="btn-primary" onclick="iniciarJuego()">INICIAR PROTOCOLO DE DESPEGUE</button>
             </div>
-        </div>
 
-        <!-- PUERTA 3 -->
-        <div id="nivel3" class="screen">
-            <h2>PUERTA 3: Generador Principal</h2>
-            <h3>Tema: Asíntota Horizontal</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('El comportamiento asintótico estudia qué le pasa a una función cuando x se va al infinito. Si se estabiliza en un número, es una Asíntota Horizontal.')">📄 Leer Archivo: Asíntotas</button>
-            <div class="puzzle-box">
-                <p>El voltaje V(t) en el tiempo t es:</p>
-                <p class="math-func">V(t) = (800t) / (2t + 5)</p>
-                <p>Si el tiempo tiende al infinito, ¿en qué voltaje máximo se estabilizará?</p>
-                <input type="number" id="input3" placeholder="Ingresa voltaje">
-                <br>
-                <button class="btn-verify" onclick="verificar(3, '400', 'nivel4')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: Cuando t tiende a infinito, divide los coeficientes de mayor grado: 800 / 2.')">💡 Pista</button>
+            <!-- NIVEL 1 -->
+            <div id="nivel1" class="screen">
+                <h2>SECTOR 1: Núcleo de Enfriamiento</h2>
+                <h3>Tema: Comportamiento Local (Puntos Críticos)</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Los Puntos Críticos ocurren cuando la derivada es cero (f\'(x) = 0). En la gráfica representan picos máximos o valles mínimos.')">📄 Archivo: Puntos Críticos</button>
+                <div class="puzzle-box">
+                    <p>El reactor está sobrecalentado. Ingresa el minuto exacto x donde la temperatura alcanza su punto más bajo (mínimo):</p>
+                    <div class="math-func">T(x) = x² - 8x + 15</div>
+                    <input type="number" id="input1" placeholder="Valor de x">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(1, '4', 'nivel2')">ENFRIAR REACTOR</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: Deriva T(x) -> T\'(x) = 2x - 8. Iguala a 0 y despeja x.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 4 -->
-        <div id="nivel4" class="screen">
-            <h2>PUERTA 4: Túnel de Gravedad</h2>
-            <h3>Tema: Punto de Inflexión</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('La Segunda Derivada f\'\'(x) nos habla de la CONCAVIDAD. Un punto de inflexión ocurre cuando f\'\'(x) = 0 y la curva cambia de forma.')">📄 Leer Archivo: Concavidad</button>
-            <div class="puzzle-box">
-                <p>Ingresa la coordenada x donde la trayectoria C(x) cambia de concavidad:</p>
-                <p class="math-func">C(x) = x³ - 6x² + 5x</p>
-                <input type="number" id="input4" placeholder="Ingresa x">
-                <br>
-                <button class="btn-verify" onclick="verificar(4, '2', 'nivel5')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: Saca la 1ra derivada (3x² - 12x + 5) y luego la 2da derivada. Iguala la 2da derivada a 0.')">💡 Pista</button>
+            <!-- NIVEL 2 -->
+            <div id="nivel2" class="screen">
+                <h2>SECTOR 2: Radar de Navegación</h2>
+                <h3>Tema: Aproximación Lineal</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Aproximamos valores cercanos usando la Recta Tangente: L(x) = f(a) + f\'(a)(x - a)')">📄 Archivo: Recta Tangente</button>
+                <div class="puzzle-box">
+                    <p>El radar está dañado. Sabemos que f(5) = 20 y f'(5) = 3. Estimación necesaria para x = <b>5.2</b>:</p>
+                    <div class="math-func">L(5.2) = f(5) + f'(5)(5.2 - 5)</div>
+                    <input type="number" step="0.1" id="input2" placeholder="Resultado L">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(2, '20.6', 'nivel3')">CALIBRAR RADAR</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: L(5.2) = 20 + 3 * (0.2). Multiplica y suma.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 5 -->
-        <div id="nivel5" class="screen">
-            <h2>PUERTA 5: Zona de Aislamiento</h2>
-            <h3>Tema: Asíntota Vertical</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Una Asíntota Vertical ocurre cuando el denominador de una función se hace cero, lo que dispara el valor al infinito.')">📄 Leer Archivo: Fallos de Dominio</button>
-            <div class="puzzle-box">
-                <p>La presión se hace infinita en un punto crítico del dominio. ¿En qué valor de x debemos evitar entrar?</p>
-                <p class="math-func">R(x) = 50 / (x - 7)</p>
-                <input type="number" id="input5" placeholder="Ingresa x">
-                <br>
-                <button class="btn-verify" onclick="verificar(5, '7', 'nivel6')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: ¿Qué número hace que el denominador (x - 7) sea exactamente cero?')">💡 Pista</button>
+            <!-- NIVEL 3 -->
+            <div id="nivel3" class="screen">
+                <h2>SECTOR 3: Escudo de Plasma</h2>
+                <h3>Tema: Asíntotas Horizontales</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Una asíntota horizontal es el límite de la función cuando x tiende al infinito (x → ∞).')">📄 Archivo: Comportamiento al Infinito</button>
+                <div class="puzzle-box">
+                    <p>El escudo absorbe energía según la función V(t). ¿En qué nivel máximo se estabilizará si t → ∞?</p>
+                    <div class="math-func">V(t) = (800t) / (2t + 5)</div>
+                    <input type="number" id="input3" placeholder="Límite V">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(3, '400', 'nivel4')">ESTABILIZAR ESCUDO</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: Divide los coeficientes de mayor grado de t: 800 / 2.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 6 -->
-        <div id="nivel6" class="screen">
-            <h2>PUERTA 6: Computadora Central</h2>
-            <h3>Tema: Polinomio de Taylor</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Para mejor precisión que la recta, usamos Taylor de grado 2: P(x) = f(a) + f\'(a)(x-a) + [f\'\'(a)/2]*(x-a)²')">📄 Leer Archivo: Mejorando Precisión</button>
-            <div class="puzzle-box">
-                <p>En x=0 tenemos: f(0)=10, f'(0)=4, f''(0)=2.</p>
-                <p>Usa Taylor grado 2 para aproximar el valor en <b>x=1</b>.</p>
-                <input type="number" id="input6" placeholder="Ingresa aprox.">
-                <br>
-                <button class="btn-verify" onclick="verificar(6, '15', 'nivel7')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: P(1) = 10 + 4(1) + (2/2)(1)². Resuelve esa suma.')">💡 Pista</button>
+            <!-- NIVEL 4 -->
+            <div id="nivel4" class="screen">
+                <h2>SECTOR 4: Estabilizador de Gravedad</h2>
+                <h3>Tema: Concavidad y Puntos de Inflexión</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('La segunda derivada f\'\'(x) define la concavidad. Un punto de inflexión ocurre cuando f\'\'(x) = 0.')">📄 Archivo: Concavidad</button>
+                <div class="puzzle-box">
+                    <p>Encuentra la posición x donde la trayectoria cambia de concavidad:</p>
+                    <div class="math-func">C(x) = x³ - 6x² + 5x</div>
+                    <input type="number" id="input4" placeholder="Valor de x">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(4, '2', 'nivel5')">CORREGIR TRAYECTORIA</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: 1ra derivada: 3x² - 12x + 5. 2da derivada: 6x - 12 = 0. Despeja x.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 7 -->
-        <div id="nivel7" class="screen">
-            <h2>PUERTA 7: Sensores Térmicos</h2>
-            <h3>Tema: Crecimiento y Decrecimiento</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Una función es CRECIENTE si su primera derivada es positiva (+). Es DECRECIENTE si su derivada es negativa (-).')">📄 Leer Archivo: Crecimiento</button>
-            <div class="puzzle-box">
-                <p>¿En qué minuto exacto T(t) deja de subir y empieza a bajar?</p>
-                <p class="math-func">T(t) = 50 + 12t - t²</p>
-                <input type="number" id="input7" placeholder="Ingresa t">
-                <br>
-                <button class="btn-verify" onclick="verificar(7, '6', 'nivel8')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: Encuentra el máximo. Deriva T(t) e iguala a cero.')">💡 Pista</button>
+            <!-- NIVEL 5 -->
+            <div id="nivel5" class="screen">
+                <h2>SECTOR 5: Inyectores de Combustible</h2>
+                <h3>Tema: Asíntotas Verticales (Fallas de Dominio)</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Ocurre una asíntota vertical en los puntos que hacen cero el denominador de la función.')">📄 Archivo: Puntos Indefinidos</button>
+                <div class="puzzle-box">
+                    <p>Evita la presión infinita. ¿En qué valor de x se genera una asíntota vertical?</p>
+                    <div class="math-func">R(x) = 50 / (x - 7)</div>
+                    <input type="number" id="input5" placeholder="Valor crítico x">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(5, '7', 'nivel6')">BLOQUEAR FUGA</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: ¿Qué número hace que x - 7 sea igual a 0?')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 8 -->
-        <div id="nivel8" class="screen">
-            <h2>PUERTA 8: Pasillo Diagonal</h2>
-            <h3>Tema: Asíntota Oblicua</h3>
-            <button class="btn-theory" onclick="mostrarTeoria('Si el numerador tiene 1 grado más que el denominador, la función se pega a una diagonal (y = mx + b) al ir al infinito.')">📄 Leer Archivo: Diagonales</button>
-            <div class="puzzle-box">
-                <p>Hacia el infinito, se comporta como recta diagonal. ¿Cuál es la pendiente (m)?</p>
-                <p class="math-func">f(x) = (8x² + 3) / (2x - 1)</p>
-                <input type="number" id="input8" placeholder="Ingresa m">
-                <br>
-                <button class="btn-verify" onclick="verificar(8, '4', 'nivel9')">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista('Pista: Divide el término mayor de arriba entre el término mayor de abajo: 8x² / 2x = 4x. La pendiente es 4.')">💡 Pista</button>
+            <!-- NIVEL 6 -->
+            <div id="nivel6" class="screen">
+                <h2>SECTOR 6: Computadora Cuántica</h2>
+                <h3>Tema: Polinomios de Taylor</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Polinomio de Taylor grado 2: P(x) = f(a) + f\'(a)(x-a) + [f\'\'(a)/2]*(x-a)²')">📄 Archivo: Aproximación de Taylor</button>
+                <div class="puzzle-box">
+                    <p>Datos en x=0: f(0)=10, f'(0)=4, f''(0)=2. Estima el valor para x = 1:</p>
+                    <div class="math-func">P(1) = 10 + 4(1) + (2/2)(1)²</div>
+                    <input type="number" id="input6" placeholder="Resultado P">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(6, '15', 'nivel7')">REBOOT DE CPU</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: Suma 10 + 4 + 1.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 9 -->
-        <div id="nivel9" class="screen">
-            <h2>PUERTA 9: Cámara de Vacío</h2>
-            <h3>Tema: Límite Exponencial</h3>
-            <button class="btn-theory" onclick="mostrarTeoria(&#39;El término e^(-t) se vuelve CERO cuando el tiempo t se hace muy grande (infinito).&#39;)">📄 Leer Archivo: Exponenciales</button>
-            <div class="puzzle-box">
-                <p>La energía E(t) se comporta así a lo largo del tiempo:</p>
-                <p class="math-func">E(t) = 500 - 300(e⁻ᵗ)</p>
-                <p>Si esperamos muchísimo tiempo (t → ∞), ¿En qué valor se estabilizará?</p>
-                <input type="number" id="input9" placeholder="Ingresa E">
-                <br>
-                <button class="btn-verify" onclick="verificar(9, &#39;500&#39;, &#39;nivel10&#39;)">DESBLOQUEAR Y AVANZAR</button>
-                <button class="btn-hint" onclick="mostrarPista(&#39;Pista: Si e^(-t) se vuelve 0 en el infinito, toda la parte de 300(0) desaparece.&#39;)">💡 Pista</button>
+            <!-- NIVEL 7 -->
+            <div id="nivel7" class="screen">
+                <h2>SECTOR 7: Sensores de Oxígeno</h2>
+                <h3>Tema: Crecimiento y Decrecimiento</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Una función crece si f\'(x) > 0 y decrece si f\'(x) < 0. El cambio ocurre en los puntos críticos.')">📄 Archivo: Monotonía</button>
+                <div class="puzzle-box">
+                    <p>¿En qué segundo t los niveles de oxígeno alcanzan su máximo antes de decaer?</p>
+                    <div class="math-func">O(t) = 50 + 12t - t²</div>
+                    <input type="number" id="input7" placeholder="Tiempo t">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(7, '6', 'nivel8')">OPTIMIZAR OXÍGENO</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: O\'(t) = 12 - 2t = 0. Despeja t.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PUERTA 10 -->
-        <div id="nivel10" class="screen">
-            <h2>PUERTA 10: Sobrecarga del Núcleo</h2>
-            <h3>Tema: La Prueba Final</h3>
-            <button class="btn-theory" onclick="mostrarTeoria(&#39;El comportamiento completo requiere encontrar puntos críticos y evaluar la función en ellos. Esta es la prueba final.&#39;)">📄 Leer Archivo: Síntesis Global</button>
-            <div class="puzzle-box">
-                <p>La estabilidad F(x) está dada por:</p>
-                <p class="math-func">F(x) = 2x³ - 6x</p>
-                <p>1. Encuentra la x del MÍNIMO local (cuando x es positivo).<br>2. Evalúa esa x en la función F(x). ¿Cuál es el valor final?</p>
-                <input type="number" id="input10" placeholder="Ingresa valor">
-                <br>
-                <button class="btn-verify" onclick="verificar(10, &#39;-4&#39;, &#39;final&#39;)">ABRIR SALIDA FINAL</button>
-                <button class="btn-hint" onclick="mostrarPista(&#39;Pista: Derivada = 6x² - 6 = 0. Despeja x (toma x=1). Ahora mete x=1 en la ecuación F(x).&#39;)">💡 Pista</button>
+            <!-- NIVEL 8 -->
+            <div id="nivel8" class="screen">
+                <h2>SECTOR 8: Módulo de Propulsión</h2>
+                <h3>Tema: Asíntotas Oblicuas</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Si el grado del numerador supera en 1 al denominador, la función se aproxima a una recta diagonal y = mx + b.')">📄 Archivo: Asíntotas Diagonales</button>
+                <div class="puzzle-box">
+                    <p>Hacia el infinito, la trayectoria sigue una línea inclinada. ¿Cuál es la pendiente (m)?</p>
+                    <div class="math-func">f(x) = (8x² + 3) / (2x - 1)</div>
+                    <input type="number" id="input8" placeholder="Pendiente m">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(8, '4', 'nivel9')">ALINEAR PROPULSORES</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: Divide los términos mayores: 8x² / 2x = 4x. La pendiente es 4.')">💡 Pista</button>
+                </div>
             </div>
-        </div>
 
-        <!-- PANTALLA FINAL (CELEBRACIÓN) -->
-        <div id="final" class="screen">
-            <h1 class="victory-title">🎉 ¡MISIÓN CUMPLIDA! 🎉</h1>
-            <div class="story-box success-box">
-                <p><strong>SISTEMA RESTAURADO — ESTACIÓN A SALVO</strong></p>
-                <p>Has desbloqueado exitosamente las 10 puertas del laboratorio aplicando el cálculo diferencial.</p>
-                <p>Demostraste un dominio total sobre el <em>Comportamiento Local, Aproximación Lineal, Concavidad y Asíntotas</em>.</p>
+            <!-- NIVEL 9 -->
+            <div id="nivel9" class="screen">
+                <h2>SECTOR 9: Condensador de Flujo</h2>
+                <h3>Tema: Crecimiento Exponencial e Infinito</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('El término e^(-t) tiende a 0 a medida que t tiende a infinito.')">📄 Archivo: Modelos Exponenciales</button>
+                <div class="puzzle-box">
+                    <p>Determina la energía límite E cuando el tiempo tiende al infinito (t → ∞):</p>
+                    <div class="math-func">E(t) = 500 - 300(e⁻ᵗ)</div>
+                    <input type="number" id="input9" placeholder="Energía E">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(9, '500', 'nivel10')">CARGAR CONDENSADOR</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: Si e^(-t) es 0, queda 500 - 300(0).')">💡 Pista</button>
+                </div>
             </div>
-            <button class="btn-start" onclick="location.reload()">REINICIAR ESCAPE ROOM</button>
-        </div>
 
-        <!-- VENTANA POP-UP -->
-        <div id="modal-msg" class="modal">
-            <p id="modal-text"></p>
-            <button class="btn-verify" onclick="cerrarModal()">Cerrar</button>
+            <!-- NIVEL 10 -->
+            <div id="nivel10" class="screen">
+                <h2>SECTOR 10: Salto Hiperespacial</h2>
+                <h3>Tema: Análisis Funcional Completo</h3>
+                <button class="btn-theory" onclick="mostrarTeoria('Evalúa el valor crítico en la función original para obtener el valor extremo global.')">📄 Archivo: Síntesis Global</button>
+                <div class="puzzle-box">
+                    <p>1. Halla el valor positivo de x donde ocurre el mínimo local de F(x).<br>2. Evalúa ese valor en F(x) para obtener el código final:</p>
+                    <div class="math-func">F(x) = 2x³ - 6x</div>
+                    <input type="number" id="input10" placeholder="Código final">
+                    <br>
+                    <button class="btn-verify" onclick="verificar(10, '-4', 'final')">ACTIVAR HIPERESPACIO</button>
+                    <button class="btn-hint" onclick="mostrarPista('Pista: F\'(x) = 6x² - 6 = 0 -> x = 1. Sustituye x = 1 en F(x): 2(1) - 6(1).')">💡 Pista</button>
+                </div>
+            </div>
+
+            <!-- PANTALLA FINAL -->
+            <div id="final" class="screen">
+                <h1 class="victory-title">🌌 ¡SALTO AL HIPERESPACIO EXITOSO!</h1>
+                <div class="story-box success-box">
+                    <p><b>¡NAVE SALVADA!</b> Has logrado recalibrar todos los sistemas de la Estación Euler.</p>
+                    <p>Gracias a tu dominio sobre la <b>Aproximación y el Comportamiento Funcional</b>, la tripulación ha salido del campo gravitacional del agujero negro.</p>
+                </div>
+                <button class="btn-primary" onclick="location.reload()">REINICIAR MISIÓN</button>
+            </div>
+
+            <!-- MODAL POP-UP -->
+            <div id="modal-msg" class="modal">
+                <p id="modal-text"></p>
+                <button class="btn-primary" onclick="cerrarModal()">ENTENDIDO</button>
+            </div>
         </div>
     </div>
 
